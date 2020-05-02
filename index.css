@@ -1,0 +1,50 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    text-align: center;
+}
+
+h1 {
+    font-size: 55px;
+}
+
+button, select {
+    display: inline-block;
+    background-color: #7b38d8;
+    border-radius: 10px;
+    border: 4px double #cccccc;
+    color: #eeeeee;
+    text-align: center;
+    font-size: 28px;
+    padding: 20px;
+    width: 200px;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+  }
+
+h2 {
+    display: flex;
+    padding-left: 40px;
+}
+
+li:hover {
+    background-color: orange;
+}
+
+li {
+    background-color: rgb(179, 177, 177);
+    color: black;
+    margin-top: 2px;
+    margin-left: 150px;
+    margin-right: 150px;
+    padding: 5px;
+    text-align: center;
+    border: 2px solid rgba(128, 128, 128, 0.527);
+    border-radius: 6px;
+}
