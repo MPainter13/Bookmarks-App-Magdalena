@@ -28,7 +28,6 @@ const getItems = function () {
 
 const createBookmark = function (title, url, desc, rating) {
   const newItem = JSON.stringify({ title, url, desc, rating });
-  console.log(newItem);
   return bookmarkApiFetch(`${BASE_URL}/bookmarks`, {
     method: 'POST',
     headers: {
@@ -38,8 +37,15 @@ const createBookmark = function (title, url, desc, rating) {
   });
 };
 
+const deleteBookmark = function(id) {
+  return bookmarkApiFetch(`${BASE_URL}/bookmarks/${id}`, {
+      method: 'DELETE'
+  });
+};
+
 
 export default {
   getItems,
   createBookmark,
+  deleteBookmark
 };

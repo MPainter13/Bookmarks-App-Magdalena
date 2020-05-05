@@ -48,7 +48,7 @@ const generateBookmarkElement = function (bookmark) {
           <li class="bookmark-item" data-id="${bookmark.id}">
           <h2>${bookmark.title}</h2> <div class="rating">${bookmark.rating}</div>
           <a href="${bookmark.url}" target="blank" class="button-link">Visit ${bookmark.title}!</a><span class="rating-${bookmark.rating}">   </span>
-          <button type="button" class="button-delete">X</button> 
+          <button type="button" class="button-delete">Delete</button> 
           <div class="description">                    
           <p>${bookmark.description}</p>
           </div>
@@ -65,8 +65,8 @@ const generateBookmarkElement = function (bookmark) {
 };
 
 
-const generateBookmarkString = function () {
-  const bookmarks = store.bookmarks.map(item =>
+const generateBookmarkString = function (bookmarkItem) {
+  const bookmarks = bookmarkItem.map(item =>
     generateBookmarkElement(item));
   return bookmarks.join('');
 };
@@ -92,10 +92,11 @@ const generateAddBookmark = function () {
 
 
 const render = function () {
+  let items = store.filterList(store.filter);
   let html = generateMainMenu();
 
   if (store.adding === false) {
-    html += generateBookmarkString();
+    html += generateBookmarkString(items);
   }
   else {
     html += generateAddBookmark();
@@ -138,9 +139,9 @@ const handleNewBookmarkSubmit = function () {
   });
 };
 
-const handleExpendItem = function () {
+const handleExpendBookmark = function () {
   $('main').on('click', '.bookmark-item', event => {
-    const id = $(event.target).data('id');
+    const id = $(event.currentTarget).data('id');
     const item = store.bookmarks.find(bookmark => bookmark.id === id);
     if (!item.expanded) {
       item.expanded = true;
@@ -152,19 +153,40 @@ const handleExpendItem = function () {
   });
 };
 
-// const filterBookmark = function() {
-//  $('main').on('click', '#filterBy', e => {
-//   render();
-//  });
-// };
+const getItemIdFromElement = function (item) {
+  return $(item)
+  .closest('.bookmark-item')
+  .data('id');
+};
 
+const handleDeleteBookmark = function () {
+  $('main').on('click', '.button-delete', event => {
+    const id = getItemIdFromElement(event.currentTarget);
+  
+    api.deleteBookmark(id)
+    .then(() => {
+    store.deleteBookmark(id);
+    render();
+  });
+});
+};
+
+const handleFilterBookmark = function() {
+ $('main').on('change', '#filterBy', event => {
+   let value = event.currentTarget.value;
+   store.filterList(value)
+   render();
+ });
+}
 
 
 function bindEventListeners() {
   toAddNewPage();
   handleCancelButton();
   handleNewBookmarkSubmit();
-  handleExpendItem();
+  handleExpendBookmark();
+  handleDeleteBookmark();
+  handleFilterBookmark();
 }
 
 

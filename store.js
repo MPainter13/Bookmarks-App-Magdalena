@@ -17,20 +17,35 @@ let error = null;
 let filter = 0;
 
 const findById = function (id) {
-    return this.bookmarks.find(currentItem => currentItem.id === id);
-  }
-  
-  
-  const addBookmark = function (item) {
-    this.bookmarks.push(item);
-  }
-    
-  
-  export default {
-    bookmarks,
-    adding,
-    error,
-    filter,
-    findById,
-    addBookmark,
-  }
+  return this.bookmarks.find(currentItem => currentItem.id === id);
+};
+
+
+const addBookmark = function (item) {
+  this.bookmarks.push(item);
+};
+
+const deleteBookmark = function (id) {
+  this.bookmarks = this.bookmarks.filter(currentItem => currentItem.id !== id);
+};
+
+const filterList = function (rating) {
+  this.filter = rating;
+  let filterItems = this.bookmarks.filter(item => 
+    item.rating >= this.filter);
+    return filterItems;
+};
+
+
+
+
+export default {
+  bookmarks,
+  adding,
+  error,
+  filter,
+  findById,
+  addBookmark,
+  deleteBookmark,
+  filterList,
+};
