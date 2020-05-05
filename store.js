@@ -31,12 +31,14 @@ const deleteBookmark = function (id) {
 
 const filterList = function (rating) {
   this.filter = rating;
-  let filterItems = this.bookmarks.filter(item => 
+  let filterItems = this.bookmarks.filter(item =>
     item.rating >= this.filter);
-    return filterItems;
+  return filterItems;
 };
 
-
+const setError = function (error) {
+  this.error = error;
+};
 
 
 export default {
@@ -48,4 +50,5 @@ export default {
   addBookmark,
   deleteBookmark,
   filterList,
+  setError
 };

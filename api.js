@@ -13,7 +13,7 @@ const bookmarkApiFetch = function (...args) {
       return res.json();
     })
     .then(data => {
- 
+
       if (error) {
         error.message = data.message;
         return Promise.reject(error);
@@ -37,9 +37,9 @@ const createBookmark = function (title, url, desc, rating) {
   });
 };
 
-const deleteBookmark = function(id) {
+const deleteBookmark = function (id) {
   return bookmarkApiFetch(`${BASE_URL}/bookmarks/${id}`, {
-      method: 'DELETE'
+    method: 'DELETE'
   });
 };
 

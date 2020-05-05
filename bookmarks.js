@@ -1,4 +1,3 @@
-'use strict';
 
 // const store = {
 //   bookmarks: [
@@ -89,9 +88,34 @@ const generateAddBookmark = function () {
 };
 
 
+const generateError = function (message) {
+  return `
+      <section class="error-content">
+        <button id="cancel-error">X</button>
+        <p>${message}</p>
+      </section>
+    `;
+};
 
+const renderError = function () {
+  if (store.error) {
+    const el = generateError(store.error);
+    $('.error-container').html(el);
+  } else {
+    $('.error-container').empty();
+  }
+};
+
+const handleCloseError = function () {
+  $('.error-container').on('click', '#cancel-error', () => {
+    store.setError(null);
+    renderError();
+  });
+};
 
 const render = function () {
+  renderError();
+
   let items = store.filterList(store.filter);
   let html = generateMainMenu();
 
@@ -135,6 +159,10 @@ const handleNewBookmarkSubmit = function () {
         store.addBookmark(newItem);
         store.adding = false;
         render();
+      })
+      .catch((error) => {
+        store.setError(error.message);
+        render();
       });
   });
 };
@@ -155,29 +183,35 @@ const handleExpendBookmark = function () {
 
 const getItemIdFromElement = function (item) {
   return $(item)
-  .closest('.bookmark-item')
-  .data('id');
+    .closest('.bookmark-item')
+    .data('id');
 };
 
 const handleDeleteBookmark = function () {
   $('main').on('click', '.button-delete', event => {
     const id = getItemIdFromElement(event.currentTarget);
-  
+
     api.deleteBookmark(id)
-    .then(() => {
-    store.deleteBookmark(id);
-    render();
+      .then(() => {
+        store.deleteBookmark(id);
+        render();
+      })
+      .catch((error) => {
+        store.setError(error.message);
+        render();
+      });
   });
-});
 };
 
-const handleFilterBookmark = function() {
- $('main').on('change', '#filterBy', event => {
-   let value = event.currentTarget.value;
-   store.filterList(value)
-   render();
- });
+const handleFilterBookmark = function () {
+  $('main').on('change', '#filterBy', event => {
+    let value = event.currentTarget.value;
+    store.filterList(value);
+    render();
+  });
 }
+
+
 
 
 function bindEventListeners() {
@@ -187,6 +221,7 @@ function bindEventListeners() {
   handleExpendBookmark();
   handleDeleteBookmark();
   handleFilterBookmark();
+  handleCloseError();
 }
 
 
