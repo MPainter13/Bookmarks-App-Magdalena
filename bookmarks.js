@@ -1,30 +1,31 @@
 'use strict';
 
-const store = {
-  bookmarks: [
-    {
-      id: 'x56w',
-      title: 'Title 1',
-      rating: 3,
-      url: 'http://www.title1.com',
-      description: 'lorem ipsum dolor sit',
-      expanded: false
-    },
-    {
-      id: '6ffw',
-      title: 'Title 2',
-      rating: 5,
-      url: 'http://www.title2.com',
-      description: 'dolorum tempore deserunt',
-      expanded: false
-    }
-  ],
-  adding: false,
-  error: null,
-  filter: 0
-};
+// const store = {
+//   bookmarks: [
+//     {
+//       id: 'x56w',
+//       title: 'Title 1',
+//       rating: 3,
+//       url: 'http://www.title1.com',
+//       description: 'lorem ipsum dolor sit',
+//       expanded: false
+//     },
+//     {
+//       id: '6ffw',
+//       title: 'Title 2',
+//       rating: 5,
+//       url: 'http://www.title2.com',
+//       description: 'dolorum tempore deserunt',
+//       expanded: false
+//     }
+//   ],
+//   adding: false,
+//   error: null,
+//   filter: 0
+// };
 
-
+import store from './store.js';
+import api from './api.js';
 
 
 const generateMainMenu = function () {
@@ -49,7 +50,7 @@ const generateBookmarkElement = function (bookmark) {
           <a href="${bookmark.url}" target="blank" class="button-link">Visit ${bookmark.title}!</a><span class="rating-${bookmark.rating}">   </span>
           <button type="button" class="button-delete">X</button> 
           <div class="description">                    
-          <p>${bookmark.desc}</p>
+          <p>${bookmark.description}</p>
           </div>
           </li>
           `;
@@ -76,7 +77,7 @@ const generateAddBookmark = function () {
     <label for="addNewBookmark">Add new Bookmark</label>
     <input type="text" id="addNewBookmark" name="title" required>
     <label for="addDescription">Description</label>
-    <input type="text" id="description" name="description">
+    <input type="text" id="description" name="description" required>
     <label for="link">Link:</label>
     <input type="url" id="link" name="url" required>
     <label for="rating">Rating:</label>
@@ -91,19 +92,26 @@ const generateAddBookmark = function () {
 
 
 const render = function () {
-  const addAndFilter = generateMainMenu();
-  const bookmarkListString = generateBookmarkString();
-  const mainPage = addAndFilter + bookmarkListString;
-  $('main').html(mainPage);
-}
+  let html = generateMainMenu();
+
+  if (store.adding === false) {
+    html += generateBookmarkString();
+  }
+  else {
+    html += generateAddBookmark();
+  }
+  $('main').html(html);
+};
+
 
 const toAddNewPage = function () {
   $('main').on('click', '#addBookmark', event => {
     event.preventDefault();
-    const openBookmarkForm = generateAddBookmark();
-    $('main').html(openBookmarkForm);
+    store.adding = true;
+    render();
   });
 };
+
 
 const handleCancelButton = function () {
   $('main').on('click', '#js-cancel', event => {
@@ -113,17 +121,20 @@ const handleCancelButton = function () {
   });
 };
 
+
 const handleNewBookmarkSubmit = function () {
   $('main').on('submit', '.js-addingItem', event => {
     event.preventDefault();
-    const item = {
-      title: event.target.title.value,
-      rating: event.target.rating.value,
-      url: event.target.url.value,
-      description: event.target.description.value
-    };
-    store.bookmarks.push(item);
-    render();
+    const title = $('#addNewBookmark').val();
+    const url = $('#link').val();
+    const description = $('#description').val();
+    const rating = $('#rating').val();
+    api.createBookmark(title, url, description, rating)
+      .then((newItem) => {
+        store.addBookmark(newItem);
+        store.adding = false;
+        render();
+      });
   });
 };
 
