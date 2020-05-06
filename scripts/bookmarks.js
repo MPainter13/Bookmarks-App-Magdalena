@@ -29,14 +29,14 @@ import api from './api.js';
 
 const generateMainMenu = function () {
   return `
-    <button id="addBookmark">New +</button>
+    <button id="addBookmark" class="button">New +</button>
        <select id="filterBy"> 
         <option>Filter by</option>
-        <option value = "5">Star 5</option> 
-        <option value = "4">Star 4</option>
-        <option value = "3">Star 3</option>
-        <option value = "2">Star 2</option>
-        <option value = "1">Star 1</option>
+        <option value = "5">5 of 5</option> 
+        <option value = "4">4 of 5</option>
+        <option value = "3">3 of 5</option>
+        <option value = "2">2 of 5</option>
+        <option value = "1">1 of 5</option>
        </select>
     `;
 };
@@ -44,21 +44,22 @@ const generateMainMenu = function () {
 const generateBookmarkElement = function (bookmark) {
   if (bookmark.expanded) {
     return `
-          <li class="bookmark-item" data-id="${bookmark.id}">
-          <h2>${bookmark.title}</h2> <div class="rating">${bookmark.rating}</div>
+          <li class="bookmark-item bookmark-item-expanded" data-id="${bookmark.id}">
+          <h2>${bookmark.title}</h2> <div class="rating">Rating: ${bookmark.rating}</div>
           <a href="${bookmark.url}" target="blank" class="button-link">Visit ${bookmark.title}!</a><span class="rating-${bookmark.rating}">   </span>
-          <button type="button" class="button-delete">Delete</button> 
           <div class="description">                    
-          <p>${bookmark.description}</p>
+          <p>${bookmark.desc}</p>
           </div>
+          <button type="button" class="buttonD button-delete">Delete</button> 
           </li>
           `;
   }
   else {
     return `
         <li class="bookmark-item" data-id="${bookmark.id}">
-        <h2>${bookmark.title}</h2> <div class="rating">${bookmark.rating}</div>
-      </li>
+        <h2>${bookmark.title}</h2> 
+        <div class="rating">Rating: ${bookmark.rating}</div>
+        </li>
         `;
   }
 };
@@ -73,16 +74,21 @@ const generateBookmarkString = function (bookmarkItem) {
 const generateAddBookmark = function () {
   return `
     <form class="addingItem js-addingItem">
-    <label for="addNewBookmark">Add new Bookmark</label>
+    <fieldset>
+    <legend>Add New Bookmark</legend>
+    <label for="addNewBookmark">Title</label>
     <input type="text" id="addNewBookmark" name="title" required>
     <label for="addDescription">Description</label>
-    <input type="text" id="description" name="description" required>
+    <input type="text" id="desc" name="desc" required>
     <label for="link">Link:</label>
     <input type="url" id="link" name="url" required>
     <label for="rating">Rating:</label>
     <input type="text" id="rating" name="rating" required>
-    <button type="submit" class="submit">Submit</button>
-    <button type="button" id="js-cancel">Cancel</button>
+    <div class="buttons">
+    <button type="submit" class="button submit">Submit</button>
+    <button type="button" id="js-cancel" class="button">Cancel</button>
+    </div>
+    </fieldset>
     </form>
     `;
 };
@@ -152,9 +158,9 @@ const handleNewBookmarkSubmit = function () {
     event.preventDefault();
     const title = $('#addNewBookmark').val();
     const url = $('#link').val();
-    const description = $('#description').val();
+    const desc = $('#desc').val();
     const rating = $('#rating').val();
-    api.createBookmark(title, url, description, rating)
+    api.createBookmark(title, url, desc, rating)
       .then((newItem) => {
         store.addBookmark(newItem);
         store.adding = false;
