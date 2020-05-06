@@ -78,12 +78,12 @@ const generateAddBookmark = function () {
     <legend>Add New Bookmark</legend>
     <label for="addNewBookmark">Title</label>
     <input type="text" id="addNewBookmark" name="title" required>
-    <label for="addDescription">Description</label>
+    <label for="desc">Description</label>
     <input type="text" id="desc" name="desc" required>
     <label for="link">Link:</label>
     <input type="url" id="link" name="url" required>
     <label for="rating">Rating:</label>
-    <input type="text" id="rating" name="rating" required>
+    <input type="number" min=1 max=5 id="rating" name="rating" required>
     <div class="buttons">
     <button type="submit" class="button submit">Submit</button>
     <button type="button" id="js-cancel" class="button">Cancel</button>
@@ -126,7 +126,7 @@ const render = function () {
   let html = generateMainMenu();
 
   if (store.adding === false) {
-    html += generateBookmarkString(items);
+    html += '<ul>' + generateBookmarkString(items) + '</ul>';
   }
   else {
     html += generateAddBookmark();
